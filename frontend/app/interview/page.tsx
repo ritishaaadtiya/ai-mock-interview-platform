@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef, useEffect, ReactNode } from "react";
 import {
   UploadCloud,
@@ -20,6 +19,7 @@ import {
   IdCard,
   ArrowRight,
 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -54,11 +54,6 @@ interface InterviewConfig {
   difficulty: Difficulty;
   duration: Duration;
 }
-
-/* ------------------------------------------------------------------ */
-/*  API                                                                */
-/* ------------------------------------------------------------------ */
-const API_BASE_URL = "http://localhost:8000/api/interviews";
 
 /* ------------------------------------------------------------------ */
 /*  Static configuration                                               */
@@ -351,7 +346,7 @@ function ResumeUploader({
     formData.append("file", file);
 
     const response = await fetch(
-      "http://localhost:8000/api/resumes/",
+      `${API_BASE_URL}/api/resumes/`,
       {
         method: "POST",
         headers: {
@@ -827,7 +822,7 @@ export default function InterviewSetupPage() {
       }
 
       const response = await fetch(
-        `${API_BASE_URL}/job-roles/`,
+        `${API_BASE_URL}/api/interviews/job-roles/`,
         {
           method: "GET",
         }
@@ -943,7 +938,7 @@ export default function InterviewSetupPage() {
       );
 
       const response = await fetch(
-        `${API_BASE_URL}/`,
+        `${API_BASE_URL}/api/interviews/`,
         {
           method: "POST",
           headers: {

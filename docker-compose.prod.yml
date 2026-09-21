@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mock_interview_backend_prod
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.prod
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mock_interview_frontend_prod
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      # This must point to your public EC2 IP address once we launch it
+      - NEXT_PUBLIC_API_URL=http://<YOUR_EC2_PUBLIC_IP>:8000
