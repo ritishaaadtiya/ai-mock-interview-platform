@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,6 +12,8 @@ from .serializers import InterviewSerializer
 
 
 class JobRoleListView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         job_roles = JobRole.objects.filter(is_active=True).values(
             "id", "name", "description"
@@ -20,7 +22,7 @@ class JobRoleListView(APIView):
 
 
 class InterviewView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = InterviewSerializer(data=request.data)

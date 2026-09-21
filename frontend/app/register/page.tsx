@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { API_BASE_URL } from "@/lib/api";
 import "./register.css";
 
 export default function RegisterPage() {
@@ -33,7 +34,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     const response = await fetch(
-      "http://localhost:8000/api/auth/register/",
+      `${API_BASE_URL}/api/auth/register/`,
       {
         method: "POST",
         headers: {

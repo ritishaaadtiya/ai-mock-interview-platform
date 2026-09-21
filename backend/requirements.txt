@@ -3,3 +3,4 @@ djangorestframework
 psycopg[binary]
 djangorestframework-simplejwt
 django-cors-headers
+gunicorn
