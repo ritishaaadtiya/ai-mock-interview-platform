@@ -5,3 +5,5 @@ djangorestframework-simplejwt
 django-cors-headers
 gunicorn
 whitenoise[brotli]
+boto3==1.34.0
+django-storages==2.14.0
