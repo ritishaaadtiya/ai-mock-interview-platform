@@ -16,13 +16,13 @@ services:
 
   frontend:
     build:
-        context: ./frontend
-        dockerfile: Dockerfile
-        args:
-          - NEXT_PUBLIC_API_URL=http://52.66.238.162:8000
-        container_name: mock_interview_frontend_prod
-        restart: always
-        ports:
-          - "3000:3000"
-        environment:
-          - NEXT_PUBLIC_API_URL=http://52.66.238.162:8000
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://52.66.238.162:8000
+    container_name: mock_interview_frontend_prod
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://52.66.238.162:8000
