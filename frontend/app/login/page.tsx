@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowRight } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
+import { setStoredAuthTokens } from "@/lib/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -38,9 +39,8 @@ const handleSubmit = async (e: React.FormEvent) => {
       return;
     }
 
-    // Store JWT tokens
-    localStorage.setItem("access_token", data.access);
-    localStorage.setItem("refresh_token", data.refresh);
+    // Store JWT tokens consistently so all API calls can read them.
+    setStoredAuthTokens(data.access, data.refresh);
 
     // Login successful
     window.location.href = "/interview";
