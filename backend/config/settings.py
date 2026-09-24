@@ -151,12 +151,12 @@ REST_FRAMEWORK = {
 }
 CORS_ALLOWED_ORIGINS = os.getenv(
     "CORS_ALLOWED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,http://52.66.238.162:3000",
+    "http://localhost:3000,http://127.0.0.1:3000,http://52.66.238.162:3000,http://52.66.238.162",
 ).split(",")
 
 CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,http://52.66.238.162:3000,http://52.66.238.162:8000",
+    "http://localhost:3000,http://127.0.0.1:3000,http://52.66.238.162:3000,http://52.66.238.162:8000,http://52.66.238.162",
 ).split(",")
 
 # Check if AWS S3 should be used
