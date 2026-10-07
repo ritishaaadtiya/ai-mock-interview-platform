@@ -55,8 +55,8 @@ const handleSubmit = async (e: React.FormEvent) => {
       return;
     }
 
-    console.log("Registration successful:", data);
-    alert("Registration successful!");
+    // Redirect to check email page
+    window.location.href = "/check-email";
   } catch (error) {
     console.error("Error:", error);
 

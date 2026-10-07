@@ -11,10 +11,15 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [errorMsg, setErrorMsg] = useState("");
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
+
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
   setIsSubmitting(true);
+  setErrorMsg("");
+  setUnverifiedEmail("");
 
   try {
     const response = await fetch(
@@ -34,7 +39,12 @@ const handleSubmit = async (e: React.FormEvent) => {
     const data = await response.json();
 
     if (!response.ok) {
-      alert(data.detail || "Invalid email or password.");
+      if (data.detail && data.detail.includes("verify your email")) {
+        setUnverifiedEmail(email);
+        setErrorMsg("Please verify your email before logging in.");
+      } else {
+        setErrorMsg(data.detail || "Invalid email or password.");
+      }
       return;
     }
 
@@ -46,10 +56,30 @@ const handleSubmit = async (e: React.FormEvent) => {
     window.location.href = "/interview";
   } catch (error) {
     console.error("Login error:", error);
-    alert("Something went wrong. Please try again.");
+    setErrorMsg("Something went wrong. Please try again.");
   } finally {
     setIsSubmitting(false);
   }
+};
+
+  const [isResending, setIsResending] = useState(false);
+
+const handleResend = async () => {
+    if (isResending) return;
+    setIsResending(true);
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/resend-verification/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: unverifiedEmail })
+        });
+        const data = await response.json();
+        alert(data.message || "Verification email sent.");
+    } catch {
+        alert("Failed to resend. Please try again.");
+    } finally {
+        setIsResending(false);
+    }
 };
 
   return (
@@ -105,6 +135,25 @@ const handleSubmit = async (e: React.FormEvent) => {
             </p>
 
             <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4">
+              
+              {errorMsg && (
+                <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">
+                  <p>{errorMsg}</p>
+                  {unverifiedEmail && (
+                    <div className="mt-2 text-xs">
+                       Didn&apos;t receive the email?{" "}
+                       <button 
+                          type="button" 
+                          onClick={handleResend} 
+                          disabled={isResending}
+                          className={`font-semibold underline ${isResending ? 'text-brand-400 cursor-not-allowed' : 'text-brand-600 hover:text-brand-700'}`}
+                       >
+                          {isResending ? 'Sending...' : 'Resend verification email'}
+                       </button>
+                    </div>
+                  )}
+                </div>
+              )}
               <div>
                 <label
                   htmlFor="email"

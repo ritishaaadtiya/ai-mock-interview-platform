@@ -85,3 +85,24 @@ class Interview(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.job_role.name}"
+
+
+class InterviewQuestion(models.Model):
+    interview = models.ForeignKey(
+        Interview,
+        on_delete=models.CASCADE,
+        related_name="questions",
+    )
+    question_number = models.PositiveSmallIntegerField()
+    topic = models.CharField(max_length=100, blank=True)
+    question_text = models.TextField()
+    candidate_answer = models.TextField(blank=True, default="")
+    score = models.PositiveSmallIntegerField(null=True, blank=True)
+    feedback = models.TextField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["question_number"]
+
+    def __str__(self):
+        return f"Q{self.question_number} - Interview {self.interview_id}"

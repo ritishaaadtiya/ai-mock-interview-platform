@@ -19,7 +19,8 @@ import {
   IdCard,
   ArrowRight,
 } from "lucide-react";
-import { API_BASE_URL } from "@/lib/api";
+import api, { API_BASE_URL, fetchWithInterceptor } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -345,7 +346,7 @@ function ResumeUploader({
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch(
+    const response = await fetchWithInterceptor(
       `${API_BASE_URL}/api/resumes/`,
       {
         method: "POST",
@@ -789,6 +790,7 @@ function InterviewSummary({
 /* ------------------------------------------------------------------ */
 
 export default function InterviewSetupPage() {
+  const router = useRouter();
   const [config, setConfig] =
     useState<InterviewConfig>(DEFAULT_CONFIG);
 
@@ -821,21 +823,8 @@ export default function InterviewSetupPage() {
         );
       }
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/interviews/job-roles/`,
-        {
-          method: "GET",
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.detail ||
-            "Failed to fetch job roles."
-        );
-      }
+      const response = await api.get(`/api/interviews/job-roles/`);
+      const data = response.data;
 
       setJobRoles(data);
 
@@ -937,33 +926,8 @@ export default function InterviewSetupPage() {
         payload
       );
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/interviews/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error(
-          "Interview API error:",
-          data
-        );
-
-        alert(
-          data.detail ||
-            "Failed to start interview."
-        );
-
-        return;
-      }
+      const response = await api.post(`/api/interviews/`, payload);
+      const data = response.data;
 
       console.log(
         "Interview started successfully:",
@@ -983,12 +947,7 @@ export default function InterviewSetupPage() {
        * /interview/{interview_id}
        */
 
-      alert(
-        `Interview started successfully! Interview ID: ${data.interview_id}`
-      );
-
-      // Example for the next phase:
-      // router.push(`/interview/${data.interview_id}`);
+      router.push(`/interview/${data.interview_id}`);
     } catch (error) {
       console.error(
         "Start interview error:",

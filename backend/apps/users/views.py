@@ -1,7 +1,9 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken  # type: ignore[import-not-found]
+from rest_framework_simplejwt.tokens import (
+    RefreshToken,  # type: ignore[import-not-found]
+)
 
 from .models import User
 from .serializers import LoginSerializer
@@ -28,6 +30,12 @@ class LoginView(APIView):
             return Response(
                 {"detail": "Invalid email or password."},
                 status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        if not user.email_verified:
+            return Response(
+                {"detail": "Please verify your email before logging in."},
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         refresh = RefreshToken.for_user(user)
